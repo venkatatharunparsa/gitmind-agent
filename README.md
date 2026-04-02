@@ -74,6 +74,32 @@ npm install && npx gitagent validate -d gitmind
 
 ---
 
+## 💬 Ask GitMind Anything
+
+Ask any question about any public GitHub repo:
+
+```bash
+# Set your API key
+export GOOGLE_API_KEY="your-gemini-key"
+
+# Ask about any repo
+node gitmind/ask.js "what does this repo do" --repo owner/repo
+node gitmind/ask.js "who are the contributors" --repo owner/repo  
+node gitmind/ask.js "what are the top 3 things to fix" --repo owner/repo
+node gitmind/ask.js "what breaks if auth.js changes" --repo owner/repo
+node gitmind/ask.js "explain the tech stack" --repo owner/repo
+```
+
+Every answer includes:
+
+- 📁 Source citations  
+- 🎯 Confidence level  
+- 💡 Suggested next step  
+
+No local clone needed. Works on any public GitHub repo instantly.
+
+---
+
 ## 💬 Example questions (answer skill)
 
 - *“What is this repo for?”*  

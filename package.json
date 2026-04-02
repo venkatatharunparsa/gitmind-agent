@@ -1,0 +1,15 @@
+{
+  "name": "gitmindagent",
+  "private": true,
+  "scripts": {
+    "postinstall": "patch-package",
+    "validate:gitmind": "gitagent validate -d gitmind"
+  },
+  "devDependencies": {
+    "@open-gitagent/gitagent": "0.1.8",
+    "patch-package": "^8.0.1"
+  },
+  "dependencies": {
+    "gitclaw": "^1.1.8"
+  }
+}

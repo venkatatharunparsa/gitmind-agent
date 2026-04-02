@@ -1,0 +1,84 @@
+diff --git a/node_modules/@open-gitagent/gitagent/dist/commands/export.js b/node_modules/@open-gitagent/gitagent/dist/commands/export.js
+index 336a377..8064a2f 100644
+--- a/node_modules/@open-gitagent/gitagent/dist/commands/export.js
++++ b/node_modules/@open-gitagent/gitagent/dist/commands/export.js
+@@ -6,8 +6,7 @@ import { exportToLyzrString } from '../adapters/lyzr.js';
+ import { exportToGitHubString } from '../adapters/github.js';
+ export const exportCommand = new Command('export')
+     .description('Export agent to other formats')
+-    .requiredOption('-f, --format <format>', 'Export format (system-prompt, claude-code, openai, crewai, openclaw, nanobot, lyzr, github, copilot, opencode, cursor, gemini)')
+-    .requiredOption('-f, --format <format>', 'Export format (system-prompt, claude-code, openai, crewai, openclaw, nanobot, lyzr, github, copilot, opencode, cursor, codex)')
++    .requiredOption('-f, --format <format>', 'Export format (system-prompt, claude-code, openai, crewai, openclaw, nanobot, lyzr, github, copilot, opencode, cursor, gemini, codex)')
+     .option('-d, --dir <dir>', 'Agent directory', '.')
+     .option('-o, --output <output>', 'Output file path')
+     .action(async (options) => {
+@@ -53,12 +52,12 @@ export const exportCommand = new Command('export')
+             case 'gemini':
+                 result = exportToGeminiString(dir);
+                 break;
+-            default:
+-                error(`Unknown format: ${options.format}`);
+-                info('Supported formats: system-prompt, claude-code, openai, crewai, openclaw, nanobot, lyzr, github, copilot, opencode, cursor, gemini');
+             case 'codex':
+                 result = exportToCodexString(dir);
+-                info('Supported formats: system-prompt, claude-code, openai, crewai, openclaw, nanobot, lyzr, github, copilot, opencode, cursor, codex');
++                break;
++            default:
++                error(`Unknown format: ${options.format}`);
++                info('Supported formats: system-prompt, claude-code, openai, crewai, openclaw, nanobot, lyzr, github, copilot, opencode, cursor, gemini, codex');
+                 process.exit(1);
+         }
+         if (options.output) {
+diff --git a/node_modules/@open-gitagent/gitagent/dist/commands/import.js b/node_modules/@open-gitagent/gitagent/dist/commands/import.js
+index 027c5d3..443f260 100644
+--- a/node_modules/@open-gitagent/gitagent/dist/commands/import.js
++++ b/node_modules/@open-gitagent/gitagent/dist/commands/import.js
+@@ -450,8 +450,7 @@ function parseSections(markdown) {
+ }
+ export const importCommand = new Command('import')
+     .description('Import from other agent formats')
+-    .requiredOption('--from <format>', 'Source format (claude, cursor, crewai, opencode, gemini)')
+-    .requiredOption('--from <format>', 'Source format (claude, cursor, crewai, opencode, codex)')
++    .requiredOption('--from <format>', 'Source format (claude, cursor, crewai, opencode, gemini, codex)')
+     .argument('<path>', 'Source file or directory path')
+     .option('-d, --dir <dir>', 'Target directory', '.')
+     .action((sourcePath, options) => {
+@@ -476,12 +475,12 @@ export const importCommand = new Command('import')
+             case 'gemini':
+                 importFromGemini(sourcePath, targetDir);
+                 break;
+-            default:
+-                error(`Unknown format: ${options.from}`);
+-                info('Supported formats: claude, cursor, crewai, opencode, gemini');
+             case 'codex':
+                 importFromCodex(sourcePath, targetDir);
+-                info('Supported formats: claude, cursor, crewai, opencode, codex');
++                break;
++            default:
++                error(`Unknown format: ${options.from}`);
++                info('Supported formats: claude, cursor, crewai, opencode, gemini, codex');
+                 process.exit(1);
+         }
+         success('\nImport complete');
+diff --git a/node_modules/@open-gitagent/gitagent/dist/utils/skill-loader.js b/node_modules/@open-gitagent/gitagent/dist/utils/skill-loader.js
+index 708197f..b38274d 100644
+--- a/node_modules/@open-gitagent/gitagent/dist/utils/skill-loader.js
++++ b/node_modules/@open-gitagent/gitagent/dist/utils/skill-loader.js
+@@ -7,7 +7,7 @@ import yaml from 'js-yaml';
+ export function parseSkillMd(filePath) {
+     const content = readFileSync(filePath, 'utf-8');
+     const dir = join(filePath, '..');
+-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n*([\s\S]*)$/);
++    const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n*([\s\S]*)$/);
+     let frontmatter;
+     let instructions;
+     if (frontmatterMatch) {
+@@ -36,7 +36,7 @@ export function parseSkillMd(filePath) {
+  */
+ export function loadSkillMetadata(filePath) {
+     const content = readFileSync(filePath, 'utf-8');
+-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
++    const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+     if (!frontmatterMatch) {
+         throw new Error(`SKILL.md at ${filePath} is missing YAML frontmatter`);
+     }
